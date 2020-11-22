@@ -1,10 +1,10 @@
 EXE = pa3
 OBJS_EXE = RGBAPixel.o lodepng.o PNG.o main.o rgbtree.o tileUtil.o
 
-CXX = clang++
-CXXFLAGS = -std=c++17 -stdlib=libc++ -c -g -O0 -Wall -Wextra -pedantic 
-LD = clang++
-LDFLAGS = -std=c++17 -stdlib=libc++ -lpthread -lm 
+CXX = g++
+CXXFLAGS = -std=c++17  -c -g -O0 -Wall -Wextra -pedantic 
+LD = g++
+LDFLAGS = -std=c++17 -lpthread -lm 
 
 all	: pa3
 

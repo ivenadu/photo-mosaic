@@ -21,6 +21,7 @@ using namespace tiler;
 int main()
 {
 
+
     // read directory and create map of average color -> file name (this function is given)
     map<RGBAPixel, string> photos = buildMap("imlib/");
     

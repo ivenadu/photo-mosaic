@@ -45,12 +45,32 @@ map<RGBAPixel, string> tiler::buildMap(string path) {
     map < RGBAPixel, string> thumbs;
     for (const auto & entry : fs::directory_iterator(path)) {
         PNG curr; curr.readFromFile(entry.path());
+        unsigned int sum_r = 0;
+        unsigned int sum_g = 0;
+        unsigned int sum_b = 0;
+        unsigned int sum_a = 0;
+        int W = curr.width();
+        int H = curr.height();
+        
+        for(int i = 0; i < W; i++){
+            for(int j = 0; j < H; j++){
+                auto& p = *curr.getPixel(i,j);
+                sum_r += p.r;
+                sum_g += p.g;
+                sum_b += p.r;
+                sum_a += p.a;
+            }
+        }
 
+        int total = W*H;
+        sum_r /= total;
+        sum_g /= total;
+        sum_b /= total;
+        sum_a /= total;
 
-    /* your code here */
-
-
+        thumbs.insert(std::make_pair(RGBAPixel(sum_r, sum_g, sum_b, sum_a), entry.path().string()));
     }
+
     return thumbs;
 }
 

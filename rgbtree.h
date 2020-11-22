@@ -133,7 +133,7 @@ public:
 
   /* =============== end of public PA3 FUNCTIONS =========================*/
 
-    private:
+    public:
   /* =============== private PA3 FUNCTIONS =========================*/
   /* most of the files in this section will be helper functions for */
   /* the rgbtree constructor, and for the nearest neighbor function.*/
@@ -190,6 +190,7 @@ public:
      */
     int distToSplit(const RGBAPixel& query, const RGBAPixel& curr, int dimension ) const;
 
+    void make_tree(int start, int end, int depth);
 };
 #endif
 
