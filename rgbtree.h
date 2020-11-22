@@ -180,6 +180,9 @@ public:
     /* You should adapt the code you were given in HW2 for this one */
     int partition(int lo, int hi, int d);
 
+    // decide if should swap depending on dimension
+    bool willswap(int i, int lo, int d);
+
 
     /* distToSplit 
      *  This function just returns the distance between the query point, and the
