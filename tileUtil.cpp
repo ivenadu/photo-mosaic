@@ -7,9 +7,6 @@
 
 #include "tileUtil.h"
 
-namespace tiler {
-    map<string, PNG> icons;
-}
 
 /**
  * Function tile:
@@ -27,6 +24,8 @@ namespace tiler {
  */
 
 PNG tiler::tile(PNG & target, const rgbtree & ss, map<RGBAPixel,string> & photos){
+    map<string, PNG> icons;
+
     int W = target.width();
     int H = target.height();
 
@@ -36,15 +35,26 @@ PNG tiler::tile(PNG & target, const rgbtree & ss, map<RGBAPixel,string> & photos
     for(int i = 0; i < W; i++){
         for(int j = 0; j < H; j++){
             const auto& query = *target.getPixel(i,j);
-            printf("[%d, %d]: query (%d, %d, %d)\n", i, j, query.r, query.g, query.b);
+           // printf("[%d, %d]: query (%d, %d, %d)\n", i, j, query.r, query.g, query.b);
             const auto& near = ss.findNearestNeighbor(query);
-            printf("[%d, %d]: near (%d, %d, %d)\n", i, j, near.r, near.g, near.b);
+           // printf("[%d, %d]: near (%d, %d, %d)\n", i, j, near.r, near.g, near.b);
             const auto& filename = photos[near];
+
+            auto it = icons.find(filename);
+            if(it == icons.end()){
+                PNG img; img.readFromFile(filename);
+                icons.insert(std::make_pair(filename, img));
+            }
             const auto& icon = icons[filename];
             
             for(int r = 0; r < TILESIZE; r++){
                 for(int c = 0; c < TILESIZE; c++){
-                    *result.getPixel(i*TILESIZE + r, j*TILESIZE + c) = *icon.getPixel(r,c);
+                    //*result.getPixel(i*TILESIZE + r, j*TILESIZE + c) = *icon.getPixel(r,c);
+                    auto t = result.getPixel(i*TILESIZE + r, j*TILESIZE + c);
+                    auto s = icon.getPixel(r,c);
+                    t->r = s->r;
+                    t->g = s->g;
+                    t->b = s->b;
                 }
             }
         }
@@ -69,20 +79,19 @@ map<RGBAPixel, string> tiler::buildMap(string path) {
     map < RGBAPixel, string> thumbs;
     for (const auto & entry : fs::directory_iterator(path)) {
         PNG curr; curr.readFromFile(entry.path());
+
         unsigned int sum_r = 0;
         unsigned int sum_g = 0;
         unsigned int sum_b = 0;
-        unsigned int sum_a = 0;
         int W = curr.width();
         int H = curr.height();
 
         for(int i = 0; i < W; i++){
             for(int j = 0; j < H; j++){
-                auto& p = *curr.getPixel(i,j);
-                sum_r += p.r;
-                sum_g += p.g;
-                sum_b += p.r;
-                sum_a += p.a;
+                auto p = curr.getPixel(i,j);
+                sum_r += p->r;
+                sum_g += p->g;
+                sum_b += p->b;
             }
         }
 
@@ -90,12 +99,9 @@ map<RGBAPixel, string> tiler::buildMap(string path) {
         sum_r /= total;
         sum_g /= total;
         sum_b /= total;
-        sum_a /= total;
 
         std::string filename = entry.path().string();
-        thumbs.insert(std::make_pair(RGBAPixel(sum_r, sum_g, sum_b, sum_a), filename));
-
-        icons.insert(std::make_pair(filename, curr)); //buffer all images in memory for later usage.
+        thumbs.insert(std::make_pair(RGBAPixel(sum_r, sum_g, sum_b), filename));
     }
 
     return thumbs;
