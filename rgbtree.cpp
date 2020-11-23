@@ -99,7 +99,10 @@ RGBAPixel rgbtree::findNearestNeighbor(const RGBAPixel &query) const
 bool rgbtree::smallerByDim(const RGBAPixel &first,
                            const RGBAPixel &second, int curDim) const
 {
-  return get_v(first, curDim) < get_v(second, curDim);
+  int x = get_v(first, curDim);
+  int y = get_v(second, curDim);
+  if(x == y) return first < second;
+  return x < y;
 }
 
 /**

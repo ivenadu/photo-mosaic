@@ -42,6 +42,7 @@ public:
 
 public:
 
+   rgbtree() = default;
   /* =============== public PA3 FUNCTIONS =========================*/
 
   /**
