@@ -190,7 +190,9 @@ public:
      */
     int distToSplit(const RGBAPixel& query, const RGBAPixel& curr, int dimension ) const;
 
+    //helps
     void make_tree(int start, int end, int depth);
+    void find(const RGBAPixel& query, int start, int end, int depth, int& cur_best, int& cur_dist) const;
 };
 #endif
 
