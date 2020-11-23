@@ -31,7 +31,7 @@ int main()
     // read a (small, 100x150 or so) target image into timage
     // tile(timage) returns a TILESIZExwidth by TILESIZExheight image corresponding
     // to the target.
-    PNG timage; timage.readFromFile("targets/target.png");
+    PNG timage; timage.readFromFile("targets/geo.png");
 
     // functionality of tile: for each pixel in the target image, find pixel's NN
     // in the kdtree, returning a photoID. Use the photoID to open the 
@@ -39,7 +39,7 @@ int main()
     // in the return image. You'll implement this function in __________________
     PNG mosaic = tile(timage, searchStructure, photos);
 
-    mosaic.writeToFile("targets/mosaic.png");
+    mosaic.writeToFile("targets/geo_my.png");
 
   return 0;
 }

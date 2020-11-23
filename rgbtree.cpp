@@ -80,10 +80,12 @@ void rgbtree::find(const RGBAPixel& query, int start, int end, int dim, int& cur
     cur_best = p;
   }
 
-  if(distToSplit(query, tree[p], dim) < cur_best){
+  //if(distToSplit(query, tree[p], dim) < cur_best){
+  if(cur_dist > 0)
     find(query, start, p-1, (dim + 1) % 3, cur_best, cur_dist);
-    find(query, p+1, end, (dim + 1) % 3, cur_best, cur_dist);
-  }
+  if(cur_dist > 0)
+      find(query, p+1, end, (dim + 1) % 3, cur_best, cur_dist);
+  //}
 }
 RGBAPixel rgbtree::findNearestNeighbor(const RGBAPixel &query) const
 {

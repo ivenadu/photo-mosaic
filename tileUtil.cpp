@@ -7,6 +7,10 @@
 
 #include "tileUtil.h"
 
+namespace tiler {
+    map<string, PNG> icons;
+}
+
 /**
  * Function tile:
  * @param PNG & target: an image to use as base for the mosaic. it's pixels will be
@@ -23,9 +27,29 @@
  */
 
 PNG tiler::tile(PNG & target, const rgbtree & ss, map<RGBAPixel,string> & photos){
+    int W = target.width();
+    int H = target.height();
 
-/* your code here! */
+    PNG result;
+    result.resize(W*TILESIZE, H*TILESIZE);
 
+    for(int i = 0; i < W; i++){
+        for(int j = 0; j < H; j++){
+            const auto& query = *target.getPixel(i,j);
+            printf("[%d, %d]: query (%d, %d, %d)\n", i, j, query.r, query.g, query.b);
+            const auto& near = ss.findNearestNeighbor(query);
+            printf("[%d, %d]: near (%d, %d, %d)\n", i, j, near.r, near.g, near.b);
+            const auto& filename = photos[near];
+            const auto& icon = icons[filename];
+            
+            for(int r = 0; r < TILESIZE; r++){
+                for(int c = 0; c < TILESIZE; c++){
+                    *result.getPixel(i*TILESIZE + r, j*TILESIZE + c) = *icon.getPixel(r,c);
+                }
+            }
+        }
+    }
+    return result;
 }
 
 /* buildMap: function for building the map of <key, value> pairs, where the key is an
@@ -51,7 +75,7 @@ map<RGBAPixel, string> tiler::buildMap(string path) {
         unsigned int sum_a = 0;
         int W = curr.width();
         int H = curr.height();
-        
+
         for(int i = 0; i < W; i++){
             for(int j = 0; j < H; j++){
                 auto& p = *curr.getPixel(i,j);
@@ -68,7 +92,10 @@ map<RGBAPixel, string> tiler::buildMap(string path) {
         sum_b /= total;
         sum_a /= total;
 
-        thumbs.insert(std::make_pair(RGBAPixel(sum_r, sum_g, sum_b, sum_a), entry.path().string()));
+        std::string filename = entry.path().string();
+        thumbs.insert(std::make_pair(RGBAPixel(sum_r, sum_g, sum_b, sum_a), filename));
+
+        icons.insert(std::make_pair(filename, curr)); //buffer all images in memory for later usage.
     }
 
     return thumbs;

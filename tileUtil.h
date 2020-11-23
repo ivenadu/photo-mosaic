@@ -46,6 +46,7 @@ PNG tile(PNG & target, const rgbtree & ss, map<RGBAPixel,string> & photos);
 */
 map<RGBAPixel, string> buildMap(string path);
 
+
 }
 
 #endif
